@@ -1,13 +1,17 @@
-import './App.css'
+import React from 'react';
+import VerticalNav from './component/VerticalNav';
 
-function App() {
- 
 
+const App: React.FC = () => {
   return (
-    <>
-     <div>hsdsdsd</div>
-    </>
-  )
-}
+    <div className="flex">
+      <VerticalNav />
+      <div className="flex-1 p-10">
+        <h1 className="text-3xl font-bold">Main Content</h1>
+        {/* Add your main content here */}
+      </div>
+    </div>
+  );
+};
 
-export default App
+export default App;
