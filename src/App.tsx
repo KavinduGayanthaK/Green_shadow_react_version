@@ -1,16 +1,18 @@
-import React from 'react';
-import VerticalNav from './component/VerticalNav';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { RootLayout } from "./component/RootLayout";
+import StaffSection from "./pages/StaffSection";
 
 
 const App: React.FC = () => {
   return (
-    <div className="flex">
-      <VerticalNav />
-      <div className="flex-1 p-10">
-        <h1 className="text-3xl font-bold">Main Content</h1>
-        {/* Add your main content here */}
-      </div>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<RootLayout />}>
+          <Route path="staff" element={<StaffSection />} />
+        </Route>
+      </Routes>
+    </Router>
   );
 };
 
