@@ -1,45 +1,59 @@
-import React, { useState } from 'react';
-import { Button, Modal } from 'antd';
+import React, { useState } from "react";
+import { Modal, Button, Input, Form } from "antd";
 
-const App: React.FC = () => {
-  const [open, setOpen] = useState(false);
+interface ModalComponentProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const ModalComponent: React.FC<ModalComponentProps> = ({
+  isOpen,
+  onClose,
+  children,
+}) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [modalText, setModalText] = useState('Content of the modal');
+  const [form] = Form.useForm(children.form); // Using Ant Design form to manage inputs
 
-  const showModal = () => {
-    setOpen(true);
-  };
-
-  const handleOk = () => {
-    setModalText('The modal will be closed after two seconds');
+  const handleAdd = () => {
     setConfirmLoading(true);
     setTimeout(() => {
-      setOpen(false);
       setConfirmLoading(false);
+      form.resetFields(); // Clears the form fields
+      onClose(); // Close the modal after "Add"
     }, 2000);
   };
 
   const handleCancel = () => {
-    console.log('Clicked cancel button');
-    setOpen(false);
+    Modal.confirm({
+      title: "Are you sure you want to cancel?",
+      content: "You will lose any unsaved changes.",
+      onOk: () => onClose(), // Close the modal when confirming cancel
+    });
   };
 
   return (
-    <>
-      <Button type="primary" onClick={showModal}>
-        Open Modal with async logic
-      </Button>
-      <Modal
-        title="Title"
-        open={open}
-        onOk={handleOk}
-        confirmLoading={confirmLoading}
-        onCancel={handleCancel}
-      >
-        <p>{modalText}</p>
-      </Modal>
-    </>
+    <Modal
+      width={800}
+      title="Add Employee"
+      open={isOpen}
+      onCancel={handleCancel} // Call handleCancel on modal close
+      footer={[
+        <Button key="cancel" onClick={handleCancel}>
+          Cancel
+        </Button>,
+        <Button
+          key="add"
+          type="primary"
+          loading={confirmLoading}
+          onClick={handleAdd}
+        >
+          Add
+        </Button>,
+      ]}
+    >
+      {children}
+    </Modal>
   );
 };
 
-export default App;
+export default ModalComponent;
