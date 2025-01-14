@@ -30,9 +30,8 @@ const useStyle = createStyles(({ css, token }) => {
     return (
       <Table<TableProps>
         className={styles.customTable}
-        dataSource={dataSource}
         columns={columns}
-       
+        dataSource={dataSource}
         scroll={{ x: 'max-content', y: 55 * 5 }}
       />
     );
