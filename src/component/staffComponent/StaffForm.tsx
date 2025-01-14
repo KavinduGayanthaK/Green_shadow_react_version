@@ -4,16 +4,16 @@ import Select from "antd/es/select";
 import DatePicker from "antd/es/date-picker";
 import { useDispatch } from "react-redux";
 import { addStaff } from "@/reducers/StaffSlice";
+import Button from "antd/es/button";
 
 const StaffForm = () => {
   const dispatch = useDispatch();
-
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [designation, setDesignation] = useState("");
   const [gender, setGender] = useState("");
-  const [joindDate, setJoindDate] = useState(null);
+  const [joinedDate, setJoinedDate] = useState(null);
   const [dateOfBirth, setDateOfBirth] = useState(null);
   const [buildingNo, setBuildingNo] = useState("");
   const [lane, setLane] = useState("");
@@ -27,28 +27,49 @@ const StaffForm = () => {
   const [vehicles, setVehicles] = useState([]);
   const [equipments, setEquipments] = useState([]);
 
-  const formData = {
-    firstName,
-    lastName,
-    designation,
-    gender,
-    joindDate,
-    dateOfBirth,
-    buildingNo,
-    lane,
-    state,
-    city,
-    postalCode,
-    contactNumber,
-    email,
-    role,
-    fields,
-    vehicles,
-    equipments,
+  const handleSubmit = () => {
+    const address = `${buildingNo}, ${lane}, ${city}, ${state}, ${postalCode}`.trim();
+    const newStaff = {
+      
+      firstName,
+      lastName,
+      designation,
+      gender,
+      joinedDate,
+      dateOfBirth,
+      address,
+      contactNumber,
+      email,
+      role,
+      fields,
+      vehicles,
+      equipments,
+    };
+    dispatch(addStaff(newStaff));
+
+    setFirstName("");
+    setLastName("");
+    setDesignation("");
+    setGender("");
+    setJoinedDate(null);
+    setDateOfBirth(null);
+    setBuildingNo("");
+    setCity("");
+    setLane("");
+    setState("");
+    setPostalCode("");
+    setContactNumber("");
+    setEmail("");
+    setRole("");
+    setFields([]);
+    setVehicles([]);
+    setEquipments([]);
+
+    // Close the modal
+    onclose();
   };
 
-  //dispatch(addStaff(newStaff));
-
+  
   return (
     <form>
       {/* Personal Information */}
@@ -72,6 +93,13 @@ const StaffForm = () => {
             { value: "ASSISTANTMANAGER", label: "Assistant Manager" },
             { value: "ADMINANDHRSTAFF", label: "Admin and HR Staff" },
             { value: "OFFICEASSISTANT", label: "Office Assistant" },
+            { value: "SENIORAGRONOMIST", label: "Senior Agronomist" },
+            { value: "AGRONOMIST", label: "Agronomist" },
+            { value: "SOILSCIENTIST", label: "Soil Scientist" },
+            { value: "SENIORTECHNICIAN", label: "Senior Technician" },
+            { value: "TECHNICIAN", label: "Technician" },
+            { value: "SUPERVISOR", label: "Supervisor" },
+            { value: "LABOUR", label: "Labour" },
           ]}
           onChange={(value) => setDesignation(value)}
         />
@@ -88,7 +116,7 @@ const StaffForm = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
         <DatePicker
           placeholder="Enter join date"
-          onChange={(date) => setJoindDate(date)}
+          onChange={(date) => setJoinedDate(date)}
         />
         <DatePicker
           placeholder="Enter date of birth"
@@ -182,6 +210,9 @@ const StaffForm = () => {
           onChange={(value) => setEquipments(value)}
         />
       </div>
+      <Button type="primary" onClick={handleSubmit}>
+        Save
+      </Button>
     </form>
   );
 };
