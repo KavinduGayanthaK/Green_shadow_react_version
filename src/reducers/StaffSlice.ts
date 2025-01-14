@@ -7,7 +7,7 @@ const StaffSlice = createSlice({
     initialState:initialState,
     reducers: {
         addStaff: (state,action) =>{
-            state.staff = action.payload;
+            state.staff.push(action.payload);
         }
     }
 });
