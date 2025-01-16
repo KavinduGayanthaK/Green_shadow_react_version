@@ -20,7 +20,6 @@ export class StaffModel {
 
     constructor(id:string,firstName:string,lastName:string,designation:string,gender:string,joinedDate:string,dateOfBirth:string,buildingNumber:string,lane:string,city:string,
         state:string,postalCode:string,contactNumber:number,email:string,role:string,fields:[],vehicles:[],equipments:[]) {
-            
         this.staffId = id;
         this.firstName = firstName;
         this.lastName = lastName;

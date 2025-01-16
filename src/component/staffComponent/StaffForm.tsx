@@ -1,46 +1,65 @@
 import { Form, Input, Select, DatePicker, Button } from "antd";
 import { useDispatch } from "react-redux";
-import { addStaff } from "@/reducers/StaffSlice";
+import { addStaff, updateStaff } from "@/reducers/StaffSlice";
 import { StaffModel } from "@/models/StaffModel";
+import moment from "moment";
+
+const generateStaffId = () => {
+  return 'S-' + Math.floor(Math.random() * 1000000); // Generate a random ID, e.g., S-123456
+};
 
 const { Option } = Select;
 
-const StaffForm = () => {
+const StaffForm: React.FC<{ initialValues?: StaffModel; onClose: () => void }> = ({
+  initialValues,
+  onClose,
+}) => {
   const dispatch = useDispatch();
-
-  const [form] = Form.useForm(); // Use the form instance from Ant Design
+  const [form] = Form.useForm();
 
   const handleSubmit = (values: StaffModel) => {
-    const { firstName, lastName, designation, gender, joinedDate, dateOfBirth, buildingNumber,city,lane, state, contactNumber,postalCode, email, role, fields, vehicles, equipments } = values;
+    const staffId = initialValues?.staffId || generateStaffId();
 
-    const newStaff = {
-      firstName,
-      lastName,
-      designation,
-      gender,
-      joinedDate: joinedDate?joinedDate.toString():null,
-      dateOfBirth: dateOfBirth?dateOfBirth.toString():null,
-      buildingNumber,
-      lane,
-      city,
-      state,
-      postalCode,
-      contactNumber,
-      email,
-      role,
-      fields,
-      vehicles,
-      equipments,
+    const { buildingNumber, lane, city, state, postalCode } = values; // Destructure values
+    const address = `${buildingNumber || ""}, ${lane || ""}, ${city || ""}, ${state || ""}, ${postalCode || ""}`
+      .replace(/, ,/g, ",")
+      .replace(/^, |, $/g, "")
+      .trim();
+    // Convert date values to strings before dispatching
+    const formattedValues = {
+      ...values,
+      staffId,
+      address,
+      joinedDate: values.joinedDate
+        ? values.joinedDate.format("YYYY-MM-DD") // Convert to desired string format
+        : null,
+      dateOfBirth: values.dateOfBirth
+        ? values.dateOfBirth.format("YYYY-MM-DD") // Convert to desired string format
+        : null,
     };
-
-    dispatch(addStaff(newStaff));
-
-    // Reset the form after submit
-    form.resetFields();
+  
+    const updatedStaff = {
+      ...initialValues,
+      ...formattedValues,
+    };
+  
+    if (initialValues) {
+      // Update staff logic
+      dispatch(updateStaff(updatedStaff)); // Dispatch the updated staff
+    } else {
+      // Add new staff logic
+      dispatch(addStaff(formattedValues));
+    }
+  
+    form.resetFields(); // Reset the form after submit
+    onClose(); // Close the modal after submitting
   };
-
   return (
-    <Form form={form} onFinish={handleSubmit} layout="vertical">
+    <Form form={form} onFinish={handleSubmit} layout="vertical" initialValues={{
+      ...initialValues,
+      joinedDate: initialValues?.joinedDate ? moment(initialValues.joinedDate) : null,
+      dateOfBirth: initialValues?.dateOfBirth ? moment(initialValues.dateOfBirth) : null,
+    }}>
       {/* Personal Information */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ">
         <Form.Item

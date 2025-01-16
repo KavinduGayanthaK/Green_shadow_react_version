@@ -2,7 +2,7 @@ import { SelectOutlined } from "@ant-design/icons";
 import Button from "antd/es/button"; // Import the Ant Design Button
 import TableComponent from "@/component/table/TableComponent";
 import ModalComponent from "@/component/Modal";
-import Select, { SelectProps } from "antd/es/select";
+import Select from "antd/es/select";
 import StaffForm from "@/component/staffComponent/StaffForm";
 import { useSelector } from "react-redux";
 import { useState } from "react";
@@ -10,17 +10,26 @@ import { TableColumnsType } from "antd";
 
 const StaffSection = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedStaff, setSelectedStaff] = useState<any>(null);
+  const staffData = useSelector((state: any) => state.addStaff.staff);
 
-  const handleAddEmployeeClick = () => {
-    setIsModalOpen(true); // Open the modal
+   const handleAddEmployeeClick = () => {
+    setSelectedStaff(null); // Clear selected staff for a new entry
+    setIsModalOpen(true);
+  };
+
+  const handleUpdateClick = (staff: any) => {
+    setSelectedStaff(staff); // Set the staff data to be updated
+    setIsModalOpen(true);
   };
 
   const handleModalClose = () => {
     setIsModalOpen(false); // Close the modal
   };
-  const staffData = useSelector((state: unknown) => state.addStaff.staff);
+
 
   const columns: TableColumnsType<any> = [
+    {title: "Staff Id",dataIndex: "staffId",key: "staffId",width: 120,},
     {title: "First Name",dataIndex: "firstName",key: "firstName",width: 120,},
     { title: "Last Name", dataIndex: "lastName", key: "lastName", width: 120 },
     {title: "Designation",dataIndex: "designation",key: "designation",width: 120},
@@ -34,7 +43,13 @@ const StaffSection = () => {
     { title: "Fields", dataIndex: "fields", key: "fields", width: 120 },
     { title: "Vehicles", dataIndex: "vehicles", key: "vehicles", width: 120 },
     {title: "Equipments",dataIndex: "equipments",key: "equipments",width: 120},
-    {title: "Action",key: "operation",fixed: "right",width: 100,render: () => <a>UPDATE</a>},
+    {title: "Action",key: "update",fixed: "right",width: 100,render: (_, record) => (
+      <>
+        <a onClick={() => handleUpdateClick(record)}>UPDATE</a>
+       
+      </>
+      
+    ),},
     {title: "Action",key: "operation", fixed: "right",width: 100,render: () => <a>DELETE</a>},
   ];
 
@@ -43,14 +58,15 @@ const StaffSection = () => {
     key: staff.id || `staff-${index}`, // Use `id` if available, fallback to a generated key
   }));
 
-  const options: SelectProps["options"] = [];
+  // const options: SelectProps["options"] = [];
 
-  for (let i = 10; i < 36; i++) {
-    options.push({
-      label: i.toString(36) + i,
-      value: i.toString(36) + i,
-    });
-  }
+  // for (let i = 10; i < 36; i++) {
+  //   options.push({
+  //     label: i.toString(36) + i,
+  //     value: i.toString(36) + i,
+  //   });
+  // }
+
 
   return (
     <section id="staff-section" className="w-full overflow-auto">
@@ -98,9 +114,9 @@ const StaffSection = () => {
       <ModalComponent
         isOpen={isModalOpen}
         onClose={handleModalClose}
-        title="Add Employee"
+        title={selectedStaff ? "Update Employee" : "Add Employee"} 
       >
-        <StaffForm />
+        <StaffForm  initialValues={selectedStaff}  onClose={handleModalClose} />
       </ModalComponent>
     </section>
   );
