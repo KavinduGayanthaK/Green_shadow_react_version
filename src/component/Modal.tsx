@@ -1,18 +1,21 @@
 import React, { useState } from "react";
-import { Modal, Button, Input, Form } from "antd";
+import { Modal, Button, Form } from "antd";
 
 interface ModalComponentProps {
   isOpen: boolean;
   onClose: () => void;
+  title: string;
+  children: React.ReactNode;  // Typing children as ReactNode
 }
 
 const ModalComponent: React.FC<ModalComponentProps> = ({
   isOpen,
   onClose,
+  title,
   children,
 }) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [form] = Form.useForm(children.form); // Using Ant Design form to manage inputs
+  const [form] = Form.useForm(); // Create a form instance
 
   const handleAdd = () => {
     setConfirmLoading(true);
@@ -27,14 +30,18 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
     Modal.confirm({
       title: "Are you sure you want to cancel?",
       content: "You will lose any unsaved changes.",
-      onOk: () => onClose(), // Close the modal when confirming cancel
+      onOk: () =>{
+        form.resetFields(),
+         onClose() // Close the modal when confirming cancel
+      
+      }
     });
   };
 
   return (
     <Modal
       width={800}
-      title="Add Employee"
+      title={title}
       open={isOpen}
       onCancel={handleCancel} // Call handleCancel on modal close
       footer={[
@@ -51,7 +58,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
         </Button>,
       ]}
     >
-      {children}
+      {children} {/* Render children here */}
     </Modal>
   );
 };
