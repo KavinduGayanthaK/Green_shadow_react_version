@@ -1,10 +1,11 @@
 import StaffSlice from "@/reducers/StaffSlice";
+import VehicleSlice from "@/reducers/VehicleSlice";
 import { configureStore } from "@reduxjs/toolkit";
-import { uptime } from "process";
+
 
 export const store = configureStore({
     reducer : {
-        addStaff:StaffSlice,
-        updateStaff:StaffSlice
+        Staff:StaffSlice,
+        vehicle:VehicleSlice,
     }
 })
