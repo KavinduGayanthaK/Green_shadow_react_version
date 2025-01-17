@@ -1,11 +1,11 @@
 import { SelectOutlined } from "@ant-design/icons";
 import Select from "antd/es/select";
 import { Button, TableColumnsType } from "antd";
-//import { useSelector } from "react-redux";
 import TableComponent from "@/component/table/TableComponent";
 import VehicleForm from "@/component/VehicleForm";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { VehicleModel } from "@/models/VehicleModel";
 
 interface VehicleDataType {
   key: React.Key;
@@ -17,14 +17,23 @@ interface VehicleDataType {
 }
 
 const VehiclePage = () => {
+
   const [open, setOpen] = useState(false);
   const [modalType, setModalType] = useState("");
+  const [selectedVehicle, setSelectedVehicle] = useState<VehicleModel | null>(null);
+  
   const vehicle = useSelector((state) => state.vehicle.vehicle) || [];
 
   function openAddModal() {
     setOpen(true);
     setModalType("add");
   }
+
+  const updateModal = (vehicle: VehicleModel) => {
+    setOpen(true);
+    setSelectedVehicle(vehicle);
+    setModalType("update");
+  };
 
   const columns: TableColumnsType<VehicleDataType> = [
     {
@@ -59,14 +68,31 @@ const VehiclePage = () => {
       key: "operation",
       fixed: "right",
       width: 100,
-      render: () => <a>UPDATE</a>,
+      render: (_, record: VehicleDataType) => (
+        <Button
+          className="text-green-400 font-bold"
+          onClick={() => {
+            console.log("Update button clickes");
+            
+            const vehicleToUpdate = vehicle.find(
+              (v: VehicleModel) =>
+                v.licensePlateNumber === record.licensePlateNumber
+            );
+            if (vehicleToUpdate) {
+              updateModal(vehicleToUpdate);
+            }
+          }}
+        >
+          UPDATE
+        </Button>
+      ),
     },
     {
       title: "Action",
       key: "operation",
       fixed: "right",
       width: 100,
-      render: () => <a>DELETE</a>,
+      render: () => <a className="text-red-500 font-bold">DELETE</a>,
     },
   ];
 
@@ -104,17 +130,33 @@ const VehiclePage = () => {
         </header>
 
         <TableComponent
-          dataSource={vehicle.map((vehicle: VehicleDataType) => ({
-            ...vehicle,
-          }))}
+          dataSource={vehicle.map(
+            (vehicle: VehicleDataType, index: number) => ({
+              ...vehicle,
+              key: vehicle.licensePlateNumber || index, // Use a unique identifier like `licensePlateNumber` or a fallback like `index`
+            })
+          )}
           columns={columns}
         />
+
         {open && modalType === "add" && (
           <VehicleForm
-            isType={"ADD Vehicle"}
+            isType={"ADD VEHICLE"}
             buttonType={"Save"}
             isOpen={open}
             onClose={() => setOpen(false)}
+          />
+        )}
+        {open && modalType === "update" && selectedVehicle && (
+          <VehicleForm
+            isType="UPDATE VEHICLE"
+            buttonType="Update"
+            isOpen={open}
+            onClose={() => {
+              setOpen(false);
+              setSelectedVehicle(null);
+            }}
+            vehicle={selectedVehicle} // Ensure this is correctly passed
           />
         )}
       </div>

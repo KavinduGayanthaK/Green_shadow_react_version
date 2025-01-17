@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Input from "antd/es/input";
 import Select from "antd/es/select";
 import { useDispatch } from "react-redux";
 import { DownOutlined } from "@ant-design/icons";
 import { VehicleModel } from "@/models/VehicleModel";
-import { addVehicle } from "@/reducers/VehicleSlice";
+import { addVehicle, updateVehicle } from "@/reducers/VehicleSlice";
 import ModalComponent from "./Modal";
 
 const VehicleForm: React.FC<{
@@ -12,7 +12,8 @@ const VehicleForm: React.FC<{
   onClose: () => void;
   isType: string;
   buttonType: string;
-}> = ({ isOpen, onClose, isType, buttonType }) => {
+  vehicle?: VehicleModel | null; 
+}> = ({ isOpen, onClose, isType, buttonType,vehicle }) => {
   const dispatch = useDispatch();
 
   const [licensePlateNumber, setLicensePlateNumber] = useState("");
@@ -21,6 +22,17 @@ const VehicleForm: React.FC<{
   const [vehicleStatus, setVehicleStatus] = useState("");
   const [specialRemark, setSpecialRemark] = useState("");
   const [vehicleStaffMember, setVehicleStaffMember] = useState("");
+
+  useEffect(() => {
+    if (vehicle) {
+      setLicensePlateNumber(vehicle.licensePlateNumber || "");
+      setCategory(vehicle.category || "");
+      setFuelType(vehicle.fuelType || "");
+      setVehicleStatus(vehicle.vehicleStatus || "");
+      setSpecialRemark(vehicle.specialRemark || "");
+      setVehicleStaffMember(vehicle.vehicleStaffMember || "");
+    }
+  }, [vehicle]);
 
   const handleSubmit = () => {
     const newVehicle: VehicleModel = {
@@ -31,7 +43,11 @@ const VehicleForm: React.FC<{
       specialRemark,
       vehicleStaffMember,
     };
-    dispatch(addVehicle(newVehicle));
+    if (isType === "UPDATE VEHICLE") {
+        dispatch(updateVehicle(newVehicle));
+      } else {
+        dispatch(addVehicle(newVehicle));
+      }
 
     setLicensePlateNumber("");
     setCategory("");
@@ -74,6 +90,7 @@ const VehicleForm: React.FC<{
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
           <Select
             placeholder="Select fuel type"
+            value={fuelType} 
             options={[
               { value: "PETROL", label: "PETROL" },
               { value: "DIESEL", label: "DIESEL" },
@@ -84,6 +101,7 @@ const VehicleForm: React.FC<{
 
           <Select
             placeholder="Select availability"
+            value={vehicleStatus}
             options={[
               { value: "AVAILABLE", label: "AVAILABLE" },
               { value: "OUTOFSERVICE", label: "OUT OF SERVICE" },
@@ -99,7 +117,7 @@ const VehicleForm: React.FC<{
           />
 
           <Select
-            mode="multiple"
+            
             maxCount={MAX_COUNT}
             value={vehicleStaffMember}
             style={{ width: "100%" }}
