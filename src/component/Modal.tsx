@@ -1,66 +1,71 @@
 import React, { useState } from "react";
-import { Modal, Button, Form } from "antd";
+import { Button, Modal } from "antd";
 
-interface ModalComponentProps {
+interface ModalProps {
+  isType: string;
+  buttonType: string;
   isOpen: boolean;
   onClose: () => void;
-  title: string;
-  children: React.ReactNode;  // Typing children as ReactNode
+  onSubmit: () => void;
+  children: React.ReactNode;
 }
 
-const ModalComponent: React.FC<ModalComponentProps> = ({
+const MainModal: React.FC<ModalProps> = ({
+  isType,
+  buttonType,
   isOpen,
   onClose,
-  title,
+  onSubmit,
   children,
 }) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [form] = Form.useForm(); // Create a form instance
 
-  const handleAdd = () => {
+  const handleOk = () => {
     setConfirmLoading(true);
     setTimeout(() => {
       setConfirmLoading(false);
-      form.resetFields(); // Clears the form fields
-      onClose(); // Close the modal after "Add"
-    }, 2000);
-  };
-
-  const handleCancel = () => {
-    Modal.confirm({
-      title: "Are you sure you want to cancel?",
-      content: "You will lose any unsaved changes.",
-      onOk: () =>{
-        form.resetFields(),
-         onClose() // Close the modal when confirming cancel
-      
-      }
-    });
+      onSubmit();
+      onClose();
+    }, 700);
   };
 
   return (
-    <Modal
-      width={800}
-      title={title}
-      open={isOpen}
-      onCancel={handleCancel} // Call handleCancel on modal close
-      footer={[
-        <Button key="cancel" onClick={handleCancel}>
-          Cancel
-        </Button>,
-        <Button
-          key="add"
-          type="primary"
-          loading={confirmLoading}
-          onClick={handleAdd}
-        >
-          Add
-        </Button>,
-      ]}
-    >
-      {children} {/* Render children here */}
-    </Modal>
+    <>
+      <Modal
+        width={800}
+        title={isType}
+        open={isOpen}
+        onCancel={onClose}
+        confirmLoading={confirmLoading}
+        footer={[
+          <Button key="cancel" onClick={onClose}>
+            Cancel
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            loading={confirmLoading}
+            onClick={handleOk}
+            className={`text-white ${
+              buttonType === "Yes,I'm Sure"
+                ? "bg-red-500 hover:bg-red-600"
+                : "bg-green-500 hover:bg-green-600"
+            }`}
+          >
+            {buttonType}
+          </Button>,
+        ]}
+        style={{
+          background: "#ffffff",
+          color: "#ffffff",
+          borderRadius: "12px",
+          overflow: "hidden",
+        }}
+      >
+        {children}
+      </Modal>
+    </>
   );
 };
 
-export default ModalComponent;
+export default MainModal;
