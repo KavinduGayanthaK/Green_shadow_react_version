@@ -38,8 +38,8 @@ const VehicleForm: React.FC<{
     const newVehicle: VehicleModel = {
       licensePlateNumber,
       category,
-      fuelType,
-      vehicleStatus,
+      fuelType: fuelType || "", 
+    vehicleStatus: vehicleStatus || "",
       specialRemark,
       vehicleStaffMember,
     };
@@ -90,7 +90,7 @@ const VehicleForm: React.FC<{
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
           <Select
             placeholder="Select fuel type"
-            value={fuelType} 
+            value={fuelType||null} 
             options={[
               { value: "PETROL", label: "PETROL" },
               { value: "DIESEL", label: "DIESEL" },
@@ -101,7 +101,7 @@ const VehicleForm: React.FC<{
 
           <Select
             placeholder="Select availability"
-            value={vehicleStatus}
+            value={vehicleStatus||null}
             options={[
               { value: "AVAILABLE", label: "AVAILABLE" },
               { value: "OUTOFSERVICE", label: "OUT OF SERVICE" },
@@ -119,11 +119,11 @@ const VehicleForm: React.FC<{
           <Select
             
             maxCount={MAX_COUNT}
-            value={vehicleStaffMember}
-            style={{ width: "100%" }}
+            value={vehicleStaffMember||null}
+            style={{ width: "100%"}}
             onChange={setVehicleStaffMember}
             suffixIcon={suffix}
-            placeholder="Please select"
+            placeholder="Please select staff member"
             options={[
               { value: "Ava Swift", label: "Ava Swift" },
               { value: "Cole Reed", label: "Cole Reed" },

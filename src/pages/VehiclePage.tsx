@@ -1,11 +1,15 @@
 import { SelectOutlined } from "@ant-design/icons";
 import Select from "antd/es/select";
-import { Button, TableColumnsType } from "antd";
+import { Button, Popconfirm, TableColumnsType } from "antd";
 import TableComponent from "@/component/table/TableComponent";
 import VehicleForm from "@/component/VehicleForm";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { VehicleModel } from "@/models/VehicleModel";
+import { deleteVehicle } from "@/reducers/VehicleSlice"; // Ensure this is the correct path
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FaUserEdit } from "react-icons/fa";
+import { MdDeleteOutline } from "react-icons/md";
 
 interface VehicleDataType {
   key: React.Key;
@@ -17,24 +21,35 @@ interface VehicleDataType {
 }
 
 const VehiclePage = () => {
-
   const [open, setOpen] = useState(false);
   const [modalType, setModalType] = useState("");
   const [selectedVehicle, setSelectedVehicle] = useState<VehicleModel | null>(null);
-  
-  const vehicle = useSelector((state) => state.vehicle.vehicle) || [];
+  const [selectedStatus, setSelectedStatus] = useState("ALL");
 
+  const vehicle = useSelector((state: any) => state.vehicle.vehicle) || []; // Replace 'any' with your state type if available
+
+  const dispatch = useDispatch();
+
+  // Function to open the "Add Vehicle" modal
   function openAddModal() {
     setOpen(true);
     setModalType("add");
   }
 
+  // Function to open the "Update Vehicle" modal
   const updateModal = (vehicle: VehicleModel) => {
     setOpen(true);
     setSelectedVehicle(vehicle);
     setModalType("update");
   };
 
+  // Function to delete a vehicle by licensePlateNumber
+  const deleteVehicleByLicensePlate = (licensePlateNumber: string) => {
+    console.log("Deleting vehicle:", licensePlateNumber);
+    dispatch(deleteVehicle({ licensePlateNumber }));
+  };
+
+  // Columns for the table
   const columns: TableColumnsType<VehicleDataType> = [
     {
       title: "License Plate Number",
@@ -62,39 +77,51 @@ const VehiclePage = () => {
       key: "allocatedStaffMember",
       width: 120,
     },
-
     {
-      title: "Action",
+      title: "Edit",
       key: "operation",
       fixed: "right",
       width: 100,
       render: (_, record: VehicleDataType) => (
-        <Button
-          className="text-green-400 font-bold"
-          onClick={() => {
-            console.log("Update button clickes");
-            
-            const vehicleToUpdate = vehicle.find(
-              (v: VehicleModel) =>
-                v.licensePlateNumber === record.licensePlateNumber
-            );
-            if (vehicleToUpdate) {
-              updateModal(vehicleToUpdate);
-            }
-          }}
-        >
-          UPDATE
-        </Button>
+        <>
+          <Button
+            className="text-green-400 font-bold"
+            onClick={() => {
+              const vehicleToUpdate = vehicle.find(
+                (v: VehicleModel) =>
+                  v.licensePlateNumber === record.licensePlateNumber
+              );
+              if (vehicleToUpdate) {
+                updateModal(vehicleToUpdate);
+              }
+            }}
+          >
+           
+           <FaUserEdit style={{ fontSize: "20px", color: "#00e62e" }}  />
+          </Button>
+          <Popconfirm
+            title="Delete the vehicle"
+            description={`Are you sure you want to delete ${record.licensePlateNumber}?`}
+            okText="Yes"
+            cancelText="No"
+            onConfirm={() => deleteVehicleByLicensePlate(record.licensePlateNumber)}
+          >
+            <Button danger className="ml-2">
+            <MdDeleteOutline style={{ fontSize: "20px", color: "#c0392b" }}  />
+            </Button>
+          </Popconfirm>
+        </>
       ),
     },
-    {
-      title: "Action",
-      key: "operation",
-      fixed: "right",
-      width: 100,
-      render: () => <a className="text-red-500 font-bold">DELETE</a>,
-    },
   ];
+
+  // Filter vehicles based on selected status
+  const filteredVehicles =
+    selectedStatus === "ALL"
+      ? vehicle
+      : vehicle.filter(
+          (v: VehicleDataType) => v.vehicleStatus === selectedStatus
+        );
 
   return (
     <section id="vehicle-section" className="w-full overflow-auto">
@@ -111,6 +138,7 @@ const VehiclePage = () => {
                   showSearch
                   placeholder="Select a status of vehicle"
                   optionFilterProp="label"
+                  onChange={(value) => setSelectedStatus(value)}
                   options={[
                     { value: "ALL", label: "ALL" },
                     { value: "AVAILABLE", label: "AVAILABLE" },
@@ -130,15 +158,16 @@ const VehiclePage = () => {
         </header>
 
         <TableComponent
-          dataSource={vehicle.map(
+          dataSource={filteredVehicles.map(
             (vehicle: VehicleDataType, index: number) => ({
               ...vehicle,
-              key: vehicle.licensePlateNumber || index, // Use a unique identifier like `licensePlateNumber` or a fallback like `index`
+              key: vehicle.licensePlateNumber || index, // Unique key
             })
           )}
           columns={columns}
         />
 
+        {/* Add Modal */}
         {open && modalType === "add" && (
           <VehicleForm
             isType={"ADD VEHICLE"}
@@ -147,6 +176,8 @@ const VehiclePage = () => {
             onClose={() => setOpen(false)}
           />
         )}
+
+        {/* Update Modal */}
         {open && modalType === "update" && selectedVehicle && (
           <VehicleForm
             isType="UPDATE VEHICLE"
@@ -156,7 +187,7 @@ const VehiclePage = () => {
               setOpen(false);
               setSelectedVehicle(null);
             }}
-            vehicle={selectedVehicle} // Ensure this is correctly passed
+            vehicle={selectedVehicle}
           />
         )}
       </div>
