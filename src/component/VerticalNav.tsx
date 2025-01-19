@@ -66,22 +66,22 @@ const VerticalNav: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               label: "Field",
             },
             {
-              key: "crop",
+              key: "/crop",
               icon: <FaSeedling />,
               label: "Crop",
             },
             {
-              key: "vehicle",
+              key: "/vehicle",
               icon: <TruckOutlined />,
               label: "Vehicle",
             },
             {
-              key: "equipment",
+              key: "/equipment",
               icon: <FaScrewdriverWrench />,
               label: "Equipment",
             },
             {
-              key: "logs",
+              key: "/logs",
               icon: <TruckOutlined />,
               label: "Logs",
             },

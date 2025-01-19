@@ -1,7 +1,9 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { RootLayout } from "./component/RootLayout";
-import StaffSection from "./pages/StaffSection";
+import StaffPage from "./pages/StaffPage";
+import VehiclePage from "./pages/VehiclePage";
+import EquipmentPage from "./pages/EquipmentPage";
 
 
 const App: React.FC = () => {
@@ -9,7 +11,9 @@ const App: React.FC = () => {
     <Router>
       <Routes>
         <Route path="/" element={<RootLayout />}>
-          <Route path="staff" element={<StaffSection />} />
+          <Route path="staff" element={<StaffPage />} />
+          <Route path="vehicle" element={<VehiclePage />} />
+          <Route path="equipment" element={<EquipmentPage />} />
         </Route>
       </Routes>
     </Router>

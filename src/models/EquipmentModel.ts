@@ -1,21 +1,21 @@
 export class EquipmentModel{
     equipmentId:string;
     equipmentName:string;
-    type:string;
+    equipmentType:string;
     totalCount:number;
     status:string;
-    allocatedFields:string[];
-    allocatedStaffMembers:string[];
+    equipmentFields:string[];
+    equipmentStaffMembers:string[];
 
-    constructor(equipmentId:string,equipmentName:string,type:string,totalCount:number,status:string,
-        allocatedFields:string[],allocatedStaffMembers:string[]) {
+    constructor(equipmentId:string,equipmentName:string,equipmentType:string,totalCount:number,status:string,
+        equipmentFields:string[],equipmentStaffMembers:string[]) {
 
         this.equipmentId = equipmentId;
         this.equipmentName = equipmentName;
-        this.type = type;
+        this.equipmentType = equipmentType;
         this.totalCount = totalCount;
         this.status = status;
-        this.allocatedFields = allocatedFields;
-        this.allocatedStaffMembers = allocatedStaffMembers;
+        this.equipmentFields = equipmentFields;
+        this.equipmentStaffMembers = equipmentStaffMembers;
     }
 }
