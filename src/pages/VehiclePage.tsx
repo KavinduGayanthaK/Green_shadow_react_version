@@ -7,7 +7,6 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { VehicleModel } from "@/models/VehicleModel";
 import { deleteVehicle } from "@/reducers/VehicleSlice"; // Ensure this is the correct path
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FaUserEdit } from "react-icons/fa";
 import { MdDeleteOutline } from "react-icons/md";
 
