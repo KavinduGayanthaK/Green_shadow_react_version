@@ -10,10 +10,19 @@ const EquipmentSlice = createSlice({
         // Add a equipment
         addEquipment: (state,action:PayloadAction<EquipmentModel>)=>{
             state.equipment.push(action.payload);
+        },
+        updateEquipment: (state, action:PayloadAction<EquipmentModel>)=>{
+            const index = state.equipment.findIndex(
+                (equipment) =>
+                    equipment.equipmentId = action.payload.equipmentId
+            );
+            if (index !== -1) {
+                state.equipment[index] = action.payload;
+            }
         }
         
     }
 })
 
-export const { addEquipment} = EquipmentSlice.actions;
+export const { addEquipment,updateEquipment} = EquipmentSlice.actions;
 export default EquipmentSlice.reducer;
