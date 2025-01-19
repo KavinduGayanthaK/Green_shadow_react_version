@@ -1,221 +1,272 @@
-import { Form, Input, Select, DatePicker, Button } from "antd";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { addStaff, updateStaff } from "@/reducers/StaffSlice";
-import { StaffModel } from "@/models/StaffModel";
+import { DatePicker, Input, Select } from "antd";
 import moment from "moment";
+import { StaffModel } from "@/models/StaffModel";
+import { addStaff, updateStaff } from "@/reducers/StaffSlice";
+import MainModal from "../Modal";
 
-const generateStaffId = () => {
-  return 'S-' + Math.floor(Math.random() * 1000000); // Generate a random ID, e.g., S-123456
-};
-
-const { Option } = Select;
-
-const StaffForm: React.FC<{ initialValues?: StaffModel; onClose: () => void }> = ({
-  initialValues,
-  onClose,
-}) => {
+const StaffForm: React.FC<{
+  isOpen: boolean;
+  onClose: () => void;
+  isType: string;
+  buttonType: string;
+  staff?: StaffModel | null;
+}> = ({ isOpen, onClose, isType, buttonType, staff }) => {
   const dispatch = useDispatch();
-  const [form] = Form.useForm();
 
-  const handleSubmit = (values: StaffModel) => {
-    const staffId = initialValues?.staffId || generateStaffId();
+  // State variables
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [designation, setDesignation] = useState<string | null>(null);
+  const [gender, setGender] = useState<string | null>(null);
+  const [joinedDate, setJoinedDate] = useState<moment.Moment | null>(null);
+  const [dateOfBirth, setDateOfBirth] = useState<moment.Moment | null>(null);
+  const [buildingNo, setBuildingNo] = useState("");
+  const [lane, setLane] = useState("");
+  const [state, setState] = useState("");
+  const [city, setCity] = useState("");
+  const [postalCode, setPostalCode] = useState("");
+  const [contactNumber, setContactNumber] = useState("");
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState<string | null>(null);
+  const [fields, setFields] = useState<string[]>([]);
+  const [vehicles, setVehicles] = useState<string[]>([]);
+  const [equipments, setEquipments] = useState<string[]>([]);
 
-    const { buildingNumber, lane, city, state, postalCode } = values; // Destructure values
-    const address = `${buildingNumber || ""}, ${lane || ""}, ${city || ""}, ${state || ""}, ${postalCode || ""}`
-      .replace(/, ,/g, ",")
-      .replace(/^, |, $/g, "")
-      .trim();
-    // Convert date values to strings before dispatching
-    const formattedValues = {
-      ...values,
-      staffId,
-      address,
-      joinedDate: values.joinedDate
-        ? values.joinedDate.format("YYYY-MM-DD") // Convert to desired string format
-        : null,
-      dateOfBirth: values.dateOfBirth
-        ? values.dateOfBirth.format("YYYY-MM-DD") // Convert to desired string format
-        : null,
-    };
-  
-    const updatedStaff = {
-      ...initialValues,
-      ...formattedValues,
-    };
-  
-    if (initialValues) {
-      // Update staff logic
-      dispatch(updateStaff(updatedStaff)); // Dispatch the updated staff
-    } else {
-      // Add new staff logic
-      dispatch(addStaff(formattedValues));
+  // Populate form on staff edit
+  useEffect(() => {
+    if (staff) {
+      setFirstName(staff.firstName || "");
+      setLastName(staff.lastName || "");
+      setDesignation(staff.designation || null);
+      setGender(staff.gender || null);
+      setJoinedDate(staff.joinedDate ? moment(staff.joinedDate) : null);
+      setDateOfBirth(staff.dateOfBirth ? moment(staff.dateOfBirth) : null);
+      setBuildingNo(staff.buildingNumber || "");
+      setLane(staff.lane || "");
+      setCity(staff.city || "");
+      setState(staff.state || "");
+      setPostalCode(staff.postalCode || "");
+      setContactNumber(staff.contactNumber || "");
+      setEmail(staff.email || "");
+      setRole(staff.role || null);
+      setFields(staff.fields || []);
+      setVehicles(staff.vehicles || []);
+      setEquipments(staff.equipments || []);
     }
-  
-    form.resetFields(); // Reset the form after submit
-    onClose(); // Close the modal after submitting
+  }, [staff]);
+
+  // Reset form fields
+  const resetForm = () => {
+    setFirstName("");
+    setLastName("");
+    setDesignation(null);
+    setGender(null);
+    setJoinedDate(null);
+    setDateOfBirth(null);
+    setBuildingNo("");
+    setLane("");
+    setCity("");
+    setState("");
+    setPostalCode("");
+    setContactNumber("");
+    setEmail("");
+    setRole(null);
+    setFields([]);
+    setVehicles([]);
+    setEquipments([]);
   };
+
+  // Handle form submission
+  const handleSubmit = () => {
+    const formattedJoinedDate = joinedDate
+      ? joinedDate.format("YYYY-MM-DD")
+      : null;
+    const formattedDateOfBirth = dateOfBirth
+      ? dateOfBirth.format("YYYY-MM-DD")
+      : null;
+
+    const newStaff: StaffModel = {
+      staffId: "",
+      firstName,
+      lastName,
+      designation: designation || "",
+      gender: gender || "",
+      joinedDate: formattedJoinedDate,
+      dateOfBirth: formattedDateOfBirth,
+      buildingNumber: buildingNo,
+      lane,
+      city,
+      state,
+      postalCode,
+      contactNumber,
+      email,
+      role: role || "",
+      fields,
+      vehicles,
+      equipments,
+      
+    };
+
+    if (isType === "UPDATE STAFF") {
+      dispatch(updateStaff(newStaff));
+    } else {
+      dispatch(addStaff(newStaff));
+    }
+
+    resetForm();
+    onClose();
+  };
+
+  
+
   return (
-    <Form form={form} onFinish={handleSubmit} layout="vertical" initialValues={{
-      ...initialValues,
-      joinedDate: initialValues?.joinedDate ? moment(initialValues.joinedDate) : null,
-      dateOfBirth: initialValues?.dateOfBirth ? moment(initialValues.dateOfBirth) : null,
-    }}>
-      {/* Personal Information */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ">
-        <Form.Item
-          name="firstName"
-          label="First Name"
-          rules={[{ required: true, message: "Please enter first name" }]}
-        >
-          <Input placeholder="Enter first name" />
-        </Form.Item>
+    <MainModal
+      isType={isType}
+      buttonType={buttonType}
+      isOpen={isOpen}
+      onClose={onClose}
+      onSubmit={handleSubmit}
+    >
+      <form>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <Input
+            placeholder="Enter first name"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+          />
+          <Input
+            placeholder="Enter last name"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+          />
+        </div>
 
-        <Form.Item
-          name="lastName"
-          label="Last Name"
-          rules={[{ required: true, message: "Please enter last name" }]}
-        >
-          <Input placeholder="Enter last name" />
-        </Form.Item>
-      </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <Select
+            placeholder="Select a designation"
+            options={[
+              { value: "ASSISTANTMANAGER", label: "Assistant Manager" },
+              { value: "ADMINANDHRSTAFF", label: "Admin and HR Staff" },
+              { value: "OFFICEASSISTANT", label: "Office Assistant" },
+              { value: "SENIORAGRONOMIST", label: "Senior Agronomist" },
+              { value: "AGRONOMIST", label: "Agronomist" },
+              { value: "SOILSCIENTIST", label: "Soil Scientist" },
+              { value: "SENIORTECHNICIAN", label: "Senior Technician" },
+              { value: "TECHNICIAN", label: "Technician" },
+              { value: "SUPERVISOR", label: "Supervisor" },
+              { value: "LABOUR", label: "Labour" },
+            ]}
+            value={designation}
+            onChange={(value) => setDesignation(value)}
+          />
+          <Select
+            placeholder="Select gender"
+            options={[
+              { value: "MALE", label: "Male" },
+              { value: "FEMALE", label: "Female" },
+            ]}
+            value={gender}
+            onChange={(value) => setGender(value)}
+          />
+        </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ">
-        <Form.Item
-          name="designation"
-          label="Designation"
-          rules={[{ required: true, message: "Please select a designation" }]}
-        >
-          <Select placeholder="Select a designation">
-            <Option value="ASSISTANTMANAGER">Assistant Manager</Option>
-            <Option value="ADMINANDHRSTAFF">Admin and HR Staff</Option>
-            <Option value="OFFICEASSISTANT">Office Assistant</Option>
-            <Option value="SENIORAGRONOMIST">Senior Agronomist</Option>
-            <Option value="AGRONOMIST">Agronomist</Option>
-            <Option value="SOILSCIENTIST">Soil Scientist</Option>
-            <Option value="SENIORTECHNICIAN">Senior Technician</Option>
-            <Option value="TECHNICIAN">Technician</Option>
-            <Option value="SUPERVISOR">Supervisor</Option>
-            <Option value="LABOUR">Labour</Option>
-          </Select>
-        </Form.Item>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <DatePicker
+            placeholder="Enter join date"
+            value={joinedDate}
+            onChange={(date) => setJoinedDate(date)}
+          />
+          <DatePicker
+            placeholder="Enter date of birth"
+            value={dateOfBirth}
+            onChange={(date) => setDateOfBirth(date)}
+          />
+        </div>
 
-        <Form.Item
-          name="gender"
-          label="Gender"
-          rules={[{ required: true, message: "Please select gender" }]}
-        >
-          <Select placeholder="Select gender">
-            <Option value="MALE">Male</Option>
-            <Option value="FEMALE">Female</Option>
-          </Select>
-        </Form.Item>
-      </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <Input
+            placeholder="Enter building no or name"
+            value={buildingNo}
+            onChange={(e) => setBuildingNo(e.target.value)}
+          />
+          <Input
+            placeholder="Enter lane"
+            value={lane}
+            onChange={(e) => setLane(e.target.value)}
+          />
+        </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Form.Item
-          name="joinedDate"
-          label="Join Date"
-          rules={[{ required: true, message: "Please select join date" }]}
-        >
-          <DatePicker placeholder="Enter join date" style={{ width: "100%" }} />
-        </Form.Item>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <Input
+            placeholder="Enter main city"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+          />
+          <Input
+            placeholder="Enter main state"
+            value={state}
+            onChange={(e) => setState(e.target.value)}
+          />
+        </div>
 
-        <Form.Item
-          name="dateOfBirth"
-          label="Date of Birth"
-          rules={[{ required: true, message: "Please select date of birth" }]}
-        >
-          <DatePicker placeholder="Enter date of birth" style={{ width: "100%" }} />
-        </Form.Item>
-      </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <Input
+            placeholder="Enter postal code"
+            value={postalCode}
+            onChange={(e) => setPostalCode(e.target.value)}
+          />
+          <Input
+            placeholder="Enter contact number"
+            value={contactNumber}
+            onChange={(e) => setContactNumber(e.target.value)}
+          />
+        </div>
 
-    
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ">
-        <Form.Item 
-        name="buildingNo"
-         label="Building No">
-          <Input placeholder="Enter building no or name" showCount maxLength={30} />
-        </Form.Item>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <Input
+            placeholder="Enter email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <Select
+            placeholder="Select a role"
+            options={[
+              { value: "MANAGER", label: "Manager" },
+              { value: "TECHNICIAN", label: "Technician" },
+              { value: "OTHER", label: "Other" },
+            ]}
+            value={role}
+            onChange={(value) => setRole(value)}
+          />
+        </div>
 
-        <Form.Item name="lane" label="Lane">
-          <Input placeholder="Enter lane" showCount maxLength={30} />
-        </Form.Item>
-      </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <Select
+            mode="multiple"
+            placeholder="Select fields"
+            value={fields}
+            onChange={(value) => setFields(value)}
+          />
+          <Select
+            mode="multiple"
+            placeholder="Select vehicles"
+            value={vehicles}
+            onChange={(value) => setVehicles(value)}
+          />
+        </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ">
-        <Form.Item name="city" label="City">
-          <Input placeholder="Enter main city" showCount maxLength={30} />
-        </Form.Item>
-
-        <Form.Item name="state" label="State">
-          <Input placeholder="Enter main state" showCount maxLength={30} />
-        </Form.Item>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ">
-        <Form.Item name="postalCode" label="Postal Code">
-          <Input placeholder="Enter postal code" showCount maxLength={30} />
-        </Form.Item>
-
-        <Form.Item
-          name="contactNumber"
-          label="Contact Number"
-          rules={[{ required: true, message: "Please enter contact number" }]}
-        >
-          <Input placeholder="Enter contact number" showCount maxLength={30} />
-        </Form.Item>
-      </div>
-
-      {/* Contact Information */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ">
-        <Form.Item
-          name="email"
-          label="Email"
-          rules={[{ required: true, message: "Please enter email" }]}
-        >
-          <Input placeholder="Enter email" />
-        </Form.Item>
-        <Form.Item
-          name="role"
-          label="Role"
-          rules={[{ required: true, message: "Please select a role" }]}
-        >
-          <Select placeholder="Select a role">
-            <Option value="MANAGER">Manager</Option>
-            <Option value="TECHNICIAN">Technician</Option>
-            <Option value="OTHER">Other</Option>
-          </Select>
-        </Form.Item>
-      </div>
-
-    
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Form.Item name="fields" label="Fields">
-          <Select mode="multiple" placeholder="Select fields">
-            {/* Dynamic field options can go here */}
-          </Select>
-        </Form.Item>
-
-        <Form.Item name="vehicles" label="Vehicles">
-          <Select mode="multiple" placeholder="Select vehicles">
-            {/* Dynamic vehicle options can go here */}
-          </Select>
-        </Form.Item>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ">
-        <Form.Item name="equipments" label="Equipments">
-          <Select mode="multiple" placeholder="Select equipment">
-            {/* Dynamic equipment options can go here */}
-          </Select>
-        </Form.Item>
-      </div>
-
-      <Button type="primary" htmlType="submit">
-        Save
-      </Button>
-    </Form>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <Select
+            mode="multiple"
+            placeholder="Select equipment"
+            value={equipments}
+            onChange={(value) => setEquipments(value)}
+          />
+        </div>
+      </form>
+    </MainModal>
   );
 };
 

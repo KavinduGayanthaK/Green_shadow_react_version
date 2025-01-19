@@ -4,22 +4,22 @@ export class StaffModel {
     lastName:string;
     designation:string
     gender:string;
-    joinedDate:string;
-    dateOfBirth:string;
+    joinedDate:string | null;
+    dateOfBirth:string | null;
     buildingNumber:string;
     lane:string;
     city:string;
     state:string;
     postalCode:string;
-    contactNumber:number;
+    contactNumber:string;
     email:string;
     role:string;
-    fields:[];
-    vehicles:[];
-    equipments:[];
+    fields:string[];
+    vehicles:string[];
+    equipments:string[];
 
-    constructor(id:string,firstName:string,lastName:string,designation:string,gender:string,joinedDate:string,dateOfBirth:string,buildingNumber:string,lane:string,city:string,
-        state:string,postalCode:string,contactNumber:number,email:string,role:string,fields:[],vehicles:[],equipments:[]) {
+    constructor(id:string,firstName:string,lastName:string,designation:string,gender:string,joinedDate:string | null,dateOfBirth:string | null,buildingNumber:string,lane:string,city:string,
+        state:string,postalCode:string,contactNumber:string,email:string,role:string,fields:string[],vehicles:string[],equipments:string[]) {
         this.staffId = id;
         this.firstName = firstName;
         this.lastName = lastName;

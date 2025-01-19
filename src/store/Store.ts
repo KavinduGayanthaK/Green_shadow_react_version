@@ -5,7 +5,7 @@ import { configureStore } from "@reduxjs/toolkit";
 
 export const store = configureStore({
     reducer : {
-        Staff:StaffSlice,
+        staff:StaffSlice,
         vehicle:VehicleSlice,
     }
 })
