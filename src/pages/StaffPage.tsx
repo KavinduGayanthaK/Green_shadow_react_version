@@ -9,7 +9,7 @@ import { FaUserEdit } from "react-icons/fa";
 import { MdDeleteOutline } from "react-icons/md";
 import { StaffModel } from "@/models/StaffModel";
 import { deleteStaff } from "@/reducers/StaffSlice";
-import StaffForm from "@/component/staffComponent/StaffForm";
+import StaffForm from "@/component/StaffForm";
 
 interface StaffDataType {
   key: React.Key;
