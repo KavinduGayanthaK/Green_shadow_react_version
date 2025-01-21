@@ -7,7 +7,6 @@ const FieldSlice = createSlice({
     name:"field",
     initialState,
     reducers : {
-        // Add a equipment
         addField: (state,action:PayloadAction<FieldModel>)=>{
             state.field.push(action.payload);
         },
