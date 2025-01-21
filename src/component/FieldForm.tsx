@@ -6,15 +6,13 @@ import { FieldModel } from "@/models/FieldModel";
 import { addField, updateField } from "@/reducers/FieldSlice";
 import ModalComponent from "./Modal";
 
-// FieldForm component now accepts generateFieldCode function
 const FieldForm: React.FC<{
   isOpen: boolean;
   onClose: () => void;
   isType: string;
   buttonType: string;
   field?: FieldModel | null;
-  generateFieldCode: (fieldName: string) => string; // Accept generateFieldCode as prop
-}> = ({ isOpen, onClose, isType, buttonType, field, generateFieldCode }) => {
+}> = ({ isOpen, onClose, isType, buttonType, field }) => {
   const dispatch = useDispatch();
 
   const [fieldCode, setFieldCode] = useState("");
@@ -24,6 +22,11 @@ const FieldForm: React.FC<{
   const [fieldCrops, setFieldCrops] = useState<string[]>([]);
   const [fieldStaff, setFieldStaff] = useState<string[]>([]);
   const [fieldImage, setFieldImage] = useState<File | null>(null);
+
+  // Function to generate field code
+  const generateFieldCode = (name: string) => {
+    return `FIELD-${name.toUpperCase().replace(/\s+/g, "-").slice(0, 10)}`;
+  };
 
   // On field load or update, pre-fill the form
   useEffect(() => {
@@ -41,10 +44,9 @@ const FieldForm: React.FC<{
   // Generate field code for new field if it is the "ADD FIELD" form
   useEffect(() => {
     if (isType === "ADD FIELD" && fieldName) {
-      const generatedCode = generateFieldCode(fieldName); // Generate based on field name
-      setFieldCode(generatedCode);
+      setFieldCode(generateFieldCode(fieldName)); // Generate based on field name
     }
-  }, [fieldName, isType, generateFieldCode]);
+  }, [fieldName, isType]);
 
   // Handle file image change (for uploading an image)
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,7 +60,6 @@ const FieldForm: React.FC<{
 
   // Handle form submission (add or update field)
   const handleSubmit = () => {
-    // Input validation
     if (!fieldName || !fieldLocation || !extentSizeOfTheField) {
       message.error("Please fill all required fields!");
       return;
@@ -71,7 +72,7 @@ const FieldForm: React.FC<{
       extentSizeOfTheField,
       fieldCrops,
       fieldStaff,
-      fieldImage: fieldImage ? URL.createObjectURL(fieldImage) : "", // Convert to object URL
+      fieldImage: fieldImage ? URL.createObjectURL(fieldImage) : "",
     };
 
     if (isType === "UPDATE FIELD" && field) {
@@ -153,7 +154,6 @@ const FieldForm: React.FC<{
             <Select.Option value="Crop 1">Crop 1</Select.Option>
             <Select.Option value="Crop 2">Crop 2</Select.Option>
             <Select.Option value="Crop 3">Crop 3</Select.Option>
-            {/* Add more crop options here */}
           </Select>
         </div>
 
@@ -169,7 +169,6 @@ const FieldForm: React.FC<{
             <Select.Option value="Staff 1">Staff 1</Select.Option>
             <Select.Option value="Staff 2">Staff 2</Select.Option>
             <Select.Option value="Staff 3">Staff 3</Select.Option>
-            {/* Add more staff options here */}
           </Select>
         </div>
 
