@@ -19,6 +19,11 @@ const CropSlice = createSlice({
             if(index !== -1) {
                 state.crop[index] = action.payload
             }
+        },
+        deleteCrop: (state,action:PayloadAction<{cropCode:string}>)=>{
+            state.crop = state.crop.filter(
+                (crop)=>crop.cropCode != action.payload.cropCode
+            );
         }
     }
 })
