@@ -9,6 +9,16 @@ const CropSlice = createSlice({
     reducers: {
         addCrop: (state,action:PayloadAction<CropModel>)=>{
             state.crop.push(action.payload);
+        },
+        updateCrop: (state,action:PayloadAction<CropModel>)=>{
+            const index = state.crop.findIndex(
+                (crop)=>{
+                    crop.cropCode = action.payload.cropCode;
+                }
+            );
+            if(index !== -1) {
+                state.crop[index] = action.payload
+            }
         }
     }
 })
