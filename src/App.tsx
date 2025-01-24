@@ -5,6 +5,7 @@ import StaffPage from "./pages/StaffPage";
 import VehiclePage from "./pages/VehiclePage";
 import EquipmentPage from "./pages/EquipmentPage";
 import FieldPage from "./pages/FieldPage";
+import CropPage from "./pages/CropPage";
 
 
 const App: React.FC = () => {
@@ -14,6 +15,7 @@ const App: React.FC = () => {
         <Route path="/" element={<RootLayout />}>
           <Route path="staff" element={<StaffPage />} />
           <Route path="field" element={<FieldPage />} />
+          <Route path="crop" element={<CropPage />} />
           <Route path="vehicle" element={<VehiclePage />} />
           <Route path="equipment" element={<EquipmentPage />} />
           
