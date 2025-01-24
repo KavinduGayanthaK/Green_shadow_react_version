@@ -1,3 +1,4 @@
+import CropSlice from "@/reducers/CropSlice";
 import EquipmentSlice from "@/reducers/EquipmentSlice";
 import FieldSlice from "@/reducers/FieldSlice";
 import StaffSlice from "@/reducers/StaffSlice";
@@ -10,6 +11,8 @@ export const store = configureStore({
         staff:StaffSlice,
         vehicle:VehicleSlice,
         equipment:EquipmentSlice,
-        field:FieldSlice
+        field:FieldSlice,
+        crop:CropSlice
+
     }
 })
