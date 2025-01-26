@@ -17,8 +17,8 @@ const CropForm: React.FC<{
   const [cropCode, setCropCode] = useState("");
   const [commonName, setCommonName] = useState("");
   const [scientificName, setScientificName] = useState("");
-  const [cropCategory, setCropCategory] = useState("");
-  const [cropSeason, setCropSeason] = useState("");
+  const [cropCategory, setCropCategory] = useState<string | null>(null);
+  const [cropSeason, setCropSeason] = useState<string | null>(null);
   const [cropFields, setCropFields] = useState<string[]>([]);
   const [cropImage, setCropImage] = useState<File | null>(null);
 
@@ -33,8 +33,8 @@ const CropForm: React.FC<{
       setCropCode(crop.cropCode || "");
       setCommonName(crop.commonName || "");
       setScientificName(crop.scientificName || "");
-      setCropCategory(crop.cropCategory || "");
-      setCropSeason(crop.cropSeason || "");
+      setCropCategory(crop.cropCategory ||null );
+      setCropSeason(crop.cropSeason || null);
       setCropFields(crop.cropFields || []);
       setCropImage(null); 
     }
@@ -85,8 +85,8 @@ const CropForm: React.FC<{
     // Reset form after submission
     setCommonName("");
     setScientificName("");
-    setCropCategory("");
-    setCropSeason("");
+    setCropCategory(null);
+    setCropSeason(null);
     setCropFields([]);
     setCropImage(null);
     onClose(); // Close the modal after submission
