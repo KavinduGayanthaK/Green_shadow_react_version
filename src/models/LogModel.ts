@@ -2,6 +2,7 @@ export class LogModel {
   logCode: string;
   logDate: string | null;
   logDetails: string;
+  logType: string;
   logImage: string;
   logFields: string[];
   logCrops: string[];
@@ -11,6 +12,7 @@ export class LogModel {
     logCode: string,
     logDate: string | null,
     logDetails: string,
+    logType: string,
     logImage: string,
     logFields: string[],
     logCrops: string[],
@@ -19,6 +21,7 @@ export class LogModel {
     this.logCode = logCode;
     this.logDate = logDate;
     this.logDetails = logDetails;
+    this.logType = logType;
     this.logImage = logImage;
     this.logFields = logFields;
     this.logCrops = logCrops;
