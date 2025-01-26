@@ -18,6 +18,7 @@ const LogForm: React.FC<{
   const [logCode, setLogCode] = useState("");
   const [logDate, setLogDate] = useState<moment.Moment | null>(null);
   const [logDetails, setLogDetails] = useState("");
+  const [logType, setLogType] = useState<string | null>(null);
   const [logImage, setLogImage] = useState<File | null>(null);
   const [logFields, setLogFields] = useState<string[]>([]);
   const [logCrops, setLogCrops] = useState<string[]>([]);
@@ -31,14 +32,14 @@ const LogForm: React.FC<{
   // On field load or update, pre-fill the form
   useEffect(() => {
     if (log) {
-        setLogCode(log.logCode || "");
-        setLogDate(log.logDate ? moment(log.logDate) : null);
-        setLogDetails(log.logDetails || "");
-        setLogImage(null); 
-        setLogFields(log.logFields || []);
-        setLogCrops(log.logCrops || []);
-        setLogStaff(log.logStaff || []);
-      
+      setLogCode(log.logCode || "");
+      setLogDate(log.logDate ? moment(log.logDate) : null);
+      setLogDetails(log.logDetails || "");
+      setLogType(log.logType || null);
+      setLogImage(null);
+      setLogFields(log.logFields || []);
+      setLogCrops(log.logCrops || []);
+      setLogStaff(log.logStaff || []);
     }
   }, [log]);
 
@@ -61,23 +62,22 @@ const LogForm: React.FC<{
 
   // Handle form submission (add or update field)
   const handleSubmit = () => {
-    const formattedLogDate = logDate ? logDate.format("YYYY-MM-DD") : null; 
+    const formattedLogDate = logDate ? logDate.format("YYYY-MM-DD") : null;
 
     if (!logDetails || !logFields || !logCrops || !logStaff) {
       message.error("Please fill all required fields!");
       return;
     }
-   
 
     const newLog: LogModel = {
-        logCode,
-        logDate:formattedLogDate,
-        logDetails,
-        logImage: logImage ? URL.createObjectURL(logImage) : "",
-        logFields,
-        logCrops,
-        logStaff
-      
+      logCode,
+      logDate: formattedLogDate,
+      logDetails,
+      logType: logType || "",
+      logImage: logImage ? URL.createObjectURL(logImage) : "",
+      logFields,
+      logCrops,
+      logStaff,
     };
 
     if (isType === "UPDATE LOG" && log) {
@@ -90,12 +90,13 @@ const LogForm: React.FC<{
 
     // Reset form after submission
     setLogCode("");
-        setLogDate(null);
-        setLogDetails("");
-        setLogImage(null); 
-        setLogFields([]);
-        setLogCrops( []);
-        setLogStaff( []);
+    setLogDate(null);
+    setLogDetails("");
+    setLogType(null);
+    setLogImage(null);
+    setLogFields([]);
+    setLogCrops([]);
+    setLogStaff([]);
     onClose(); // Close the modal after submission
   };
 
@@ -128,67 +129,79 @@ const LogForm: React.FC<{
             required
           />
           <Select
-                mode="multiple"
-                placeholder="Select fields"
-                value={logFields}
-                onChange={(value) => setLogFields(value)}
-                style={{ width: "100%" }}
-            >
-                <Select.Option value="Staff 1">Field 1</Select.Option>
-                <Select.Option value="Staff 2">Field 2</Select.Option>
-                <Select.Option value="Staff 3">Field 3</Select.Option>
-            </Select>
+            mode="multiple"
+            placeholder="Select fields"
+            value={logFields}
+            onChange={(value) => setLogFields(value)}
+            style={{ width: "100%" }}
+          >
+            <Select.Option value="Staff 1">Field 1</Select.Option>
+            <Select.Option value="Staff 2">Field 2</Select.Option>
+            <Select.Option value="Staff 3">Field 3</Select.Option>
+          </Select>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-        <Select
-                mode="multiple"
-                placeholder="Select Crops"
-                value={logCrops}
-                onChange={(value) => setLogCrops(value)}
-                style={{ width: "100%" }}
-            >
-                <Select.Option value="Staff 1">Field 1</Select.Option>
-                <Select.Option value="Staff 2">Field 2</Select.Option>
-                <Select.Option value="Staff 3">Field 3</Select.Option>
-            </Select>
-            <Select
-                mode="multiple"
-                placeholder="Select Staff"
-                value={logStaff}
-                onChange={(value) => setLogStaff(value)}
-                style={{ width: "100%" }}
-            >
-                <Select.Option value="Staff 1">Field 1</Select.Option>
-                <Select.Option value="Staff 2">Field 2</Select.Option>
-                <Select.Option value="Staff 3">Field 3</Select.Option>
-            </Select>
+          <Select
+            mode="multiple"
+            placeholder="Select Crops"
+            value={logCrops}
+            onChange={(value) => setLogCrops(value)}
+            style={{ width: "100%" }}
+          >
+            <Select.Option value="Staff 1">Field 1</Select.Option>
+            <Select.Option value="Staff 2">Field 2</Select.Option>
+            <Select.Option value="Staff 3">Field 3</Select.Option>
+          </Select>
+          <Select
+            mode="multiple"
+            placeholder="Select Staff"
+            value={logStaff}
+            onChange={(value) => setLogStaff(value)}
+            style={{ width: "100%" }}
+          >
+            <Select.Option value="Staff 1">Field 1</Select.Option>
+            <Select.Option value="Staff 2">Field 2</Select.Option>
+            <Select.Option value="Staff 3">Field 3</Select.Option>
+          </Select>
         </div>
         {/* Image Upload */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Upload Image
-          </label>
-          <input
-            type="file"
-            id="fileInput"
-            accept="image/*"
-            onChange={handleImageChange}
-            style={{
-              display: "block",
-              backgroundColor: "gray",
-              marginTop: "8px",
-            }}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Upload Image
+            </label>
+            <input
+              type="file"
+              id="fileInput"
+              accept="image/*"
+              onChange={handleImageChange}
+              style={{
+                display: "block",
+                backgroundColor: "gray",
+                marginTop: "8px",
+              }}
+            />
+            {logImage && (
+              <div style={{ marginTop: "8px" }}>
+                <h4>Uploaded Image Preview:</h4>
+                <img
+                  src={URL.createObjectURL(logImage)}
+                  alt="Uploaded Preview"
+                  style={{ width: "150px", height: "auto" }}
+                />
+              </div>
+            )}
+          </div>
+
+          <Select
+            placeholder="Select Type"
+            options={[
+              { value: "NORMAL", label: "NORMAL " },
+              { value: "DANGER", label: "DANGER " },
+            ]}
+            value={logType}
+            onChange={(value) => setLogType(value)}
           />
-          {logImage && (
-            <div style={{ marginTop: "8px" }}>
-              <h4>Uploaded Image Preview:</h4>
-              <img
-                src={URL.createObjectURL(logImage)}
-                alt="Uploaded Preview"
-                style={{ width: "150px", height: "auto" }}
-              />
-            </div>
-          )}
         </div>
       </form>
     </ModalComponent>
