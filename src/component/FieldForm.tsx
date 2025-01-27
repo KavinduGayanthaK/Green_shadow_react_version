@@ -72,7 +72,7 @@ const FieldForm: React.FC<{
       extentSizeOfTheField,
       fieldCrops,
       fieldStaff,
-      fieldImage: fieldImage ? URL.createObjectURL(fieldImage) : "",
+      fieldImage: fieldImage ? URL.createObjectURL(fieldImage) :  field ?.fieldImage || "",
     };
 
     if (isType === "UPDATE FIELD" && field) {
