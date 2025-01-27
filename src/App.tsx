@@ -7,6 +7,7 @@ import EquipmentPage from "./pages/EquipmentPage";
 import FieldPage from "./pages/FieldPage";
 import CropPage from "./pages/CropPage";
 import LogPage from "./pages/LogPage";
+import Dashboard from "./pages/Dashboard";
 
 
 const App: React.FC = () => {
@@ -14,6 +15,7 @@ const App: React.FC = () => {
     <Router>
       <Routes>
         <Route path="/" element={<RootLayout />}>
+          <Route path="/home" element={<Dashboard />} />
           <Route path="staff" element={<StaffPage />} />
           <Route path="field" element={<FieldPage />} />
           <Route path="crop" element={<CropPage />} />
