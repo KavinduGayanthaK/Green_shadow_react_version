@@ -13,9 +13,8 @@ const LogSlice = createSlice({
         },
         updateLog: (state,action: PayloadAction<LogModel>)=>{
             const index = state.log.findIndex(
-                (log)=>{
-                    log.logCode = action.payload.logCode;
-                }
+                (log) =>
+                    log.logCode = action.payload.logCode
             );
             if(index != -1){
                 state.log[index] = action.payload;
