@@ -12,9 +12,8 @@ const CropSlice = createSlice({
         },
         updateCrop: (state,action:PayloadAction<CropModel>)=>{
             const index = state.crop.findIndex(
-                (crop)=>{
-                    crop.cropCode = action.payload.cropCode;
-                }
+                (crop)=>
+                    crop.cropCode = action.payload.cropCode 
             );
             if(index !== -1) {
                 state.crop[index] = action.payload
