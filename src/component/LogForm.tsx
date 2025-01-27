@@ -74,7 +74,7 @@ const LogForm: React.FC<{
       logDate: formattedLogDate,
       logDetails,
       logType: logType || "",
-      logImage: logImage ? URL.createObjectURL(logImage) : "",
+      logImage: logImage ? URL.createObjectURL(logImage) :  log?.logImage || "",
       logFields,
       logCrops,
       logStaff,
@@ -110,24 +110,40 @@ const LogForm: React.FC<{
     >
       <form className="space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Log Code
+            </label>
           <Input
             placeholder="Log Code (auto-generated)"
             value={logCode}
             disabled
           />
-          <DatePicker
-            placeholder="Enter log date"
-            value={logDate}
-            onChange={(date) => setLogDate(date)}
-          />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Log Date
+            </label>
+            <DatePicker
+              placeholder="Enter log date"
+              value={logDate}
+              onChange={(date) => setLogDate(date)}
+             />
+          </div>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-          <Input
+          <div>
+          <label className="block text-sm font-medium text-gray-700">
+              Log Details
+            </label>
+             <Input
             placeholder="Enter Log Details"
             value={logDetails}
             onChange={(e) => setLogDetails(e.target.value)}
             required
           />
+          </div>
+         
           <Select
             mode="multiple"
             placeholder="Select fields"
