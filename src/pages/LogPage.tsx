@@ -24,9 +24,7 @@ logStaff: string[];
 
 const LogPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalType, setModalType] = useState<"ADD LOG" | "UPDATE LOG">(
-    "ADD LOG"
-  );
+  const [modalType, setModalType] = useState<"ADD LOG" | "UPDATE LOG">("ADD LOG");
   const [selectedLog, setSelectedLog] = useState<LogModel | null>(null);
   const [selectedLogType, setSelectedLogType] = useState("ALL");
 
@@ -111,6 +109,7 @@ const LogPage = () => {
             }
             details={[
               { label: "Log Details", value: log.logDetails },
+              { label: "Log Type", value: log.logType },
               { label: "Log Date", value: log.logDate || ""},
               {label: "field", value: log.logFields.join(", ")},
               {label: "crop", value: log.logCrops.join(", ")},
