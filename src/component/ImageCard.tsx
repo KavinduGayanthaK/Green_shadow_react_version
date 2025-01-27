@@ -14,7 +14,7 @@ interface CardProps {
 
 const GenericCard: React.FC<CardProps> = ({ image, title, details, actions }) => {
   return (
-    <div className="border rounded-lg bg-stone-300 text-black p-4 shadow-md">
+    <div className="border rounded-lg bg-white shadow-black shadow-2xl text-black p-4">
       {image && (
         <img
           src={typeof image === "string" ? image : URL.createObjectURL(image)}
@@ -33,7 +33,7 @@ const GenericCard: React.FC<CardProps> = ({ image, title, details, actions }) =>
           {actions.map((action, index) => (
             <Button
               key={index}
-              type={action.type || "default"}
+              type={action.type === "danger" ? "default" : action.type}
               className={`btn ${action.type === "danger" ? "bg-red-500 hover:bg-red-600 text-white" : "bg-green-800 hover:bg-green-600 text-white"}`}
               style={{ width: "140px" }}
               onClick={action.onClick}
