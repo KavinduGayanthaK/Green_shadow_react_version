@@ -33,6 +33,7 @@ const StaffForm: React.FC<{
   const [fields, setFields] = useState<string[]>([]);
   const [vehicles, setVehicles] = useState<string[]>([]);
   const [equipments, setEquipments] = useState<string[]>([]);
+  const [logs, setLog] = useState<string[]>([]);
 
   // Populate form on staff edit
   useEffect(() => {
@@ -54,6 +55,7 @@ const StaffForm: React.FC<{
       setFields(staff.fields || []);
       setVehicles(staff.vehicles || []);
       setEquipments(staff.equipments || []);
+      setLog(staff.logs || []);
     }
   }, [staff]);
 
@@ -76,6 +78,7 @@ const StaffForm: React.FC<{
     setFields([]);
     setVehicles([]);
     setEquipments([]);
+    setLog([]);
   };
 
   // Handle form submission
@@ -106,6 +109,7 @@ const StaffForm: React.FC<{
       fields,
       vehicles,
       equipments,
+      logs
       
     };
 

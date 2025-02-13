@@ -20,6 +20,7 @@ const CropForm: React.FC<{
   const [cropCategory, setCropCategory] = useState<string | null>(null);
   const [cropSeason, setCropSeason] = useState<string | null>(null);
   const [cropFields, setCropFields] = useState<string[]>([]);
+  const [cropLogs, setCropLogs] = useState<string[]>([]);
   const [cropImage, setCropImage] = useState<File | null>(null);
 
   // Function to generate field code
@@ -36,6 +37,7 @@ const CropForm: React.FC<{
       setCropCategory(crop.cropCategory ||null );
       setCropSeason(crop.cropSeason || null);
       setCropFields(crop.cropFields || []);
+      setCropLogs(crop.cropFields || []);
       setCropImage(null); 
     }
   }, [crop]);
@@ -71,6 +73,7 @@ const CropForm: React.FC<{
       cropCategory,
       cropSeason,
       cropFields,
+      cropLogs,
       cropImage: cropImage ? URL.createObjectURL(cropImage) : "",
     };
 
@@ -88,9 +91,10 @@ const CropForm: React.FC<{
     setCropCategory(null);
     setCropSeason(null);
     setCropFields([]);
+    setCropLogs([]);
     setCropImage(null);
     onClose(); // Close the modal after submission
-  };
+  };  
 
   return (
     <ModalComponent

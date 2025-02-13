@@ -21,6 +21,7 @@ const FieldForm: React.FC<{
   const [extentSizeOfTheField, setExtentSizeOfTheField] = useState("");
   const [fieldCrops, setFieldCrops] = useState<string[]>([]);
   const [fieldStaff, setFieldStaff] = useState<string[]>([]);
+  const [fieldLogs, setFieldLogs] = useState<string[]>([]);
   const [fieldImage, setFieldImage] = useState<File | null>(null);
 
   // Function to generate field code
@@ -37,6 +38,7 @@ const FieldForm: React.FC<{
       setExtentSizeOfTheField(field.extentSizeOfTheField || "");
       setFieldCrops(field.fieldCrops || []);
       setFieldStaff(field.fieldStaff || []);
+      setFieldLogs(field.fieldLogs || []);
       setFieldImage(null); // Reset field image for now
     }
   }, [field]);
@@ -72,6 +74,7 @@ const FieldForm: React.FC<{
       extentSizeOfTheField,
       fieldCrops,
       fieldStaff,
+      fieldLogs,
       fieldImage: fieldImage ? URL.createObjectURL(fieldImage) :  field ?.fieldImage || "",
     };
 
