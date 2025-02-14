@@ -4,8 +4,9 @@ import Select from "antd/es/select";
 import { useDispatch } from "react-redux";
 import { DownOutlined } from "@ant-design/icons";
 import { VehicleModel } from "@/models/VehicleModel";
-import { addVehicle, updateVehicle } from "@/reducers/VehicleSlice";
+import { saveVehicle, updateVehicle } from "@/reducers/VehicleSlice";
 import ModalComponent from "./Modal";
+import { AppDispatch } from "@/store/Store";
 
 const VehicleForm: React.FC<{
   isOpen: boolean;
@@ -14,7 +15,7 @@ const VehicleForm: React.FC<{
   buttonType: string;
   vehicle?: VehicleModel | null; 
 }> = ({ isOpen, onClose, isType, buttonType,vehicle }) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const [licensePlateNumber, setLicensePlateNumber] = useState("");
   const [category, setCategory] = useState("");
@@ -46,7 +47,7 @@ const VehicleForm: React.FC<{
     if (isType === "UPDATE VEHICLE") {
         dispatch(updateVehicle(newVehicle));
       } else {
-        dispatch(addVehicle(newVehicle));
+        dispatch(saveVehicle(newVehicle));
       }
 
     setLicensePlateNumber("");

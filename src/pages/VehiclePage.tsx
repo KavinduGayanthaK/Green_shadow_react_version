@@ -9,6 +9,7 @@ import { VehicleModel } from "@/models/VehicleModel";
 import { deleteVehicle } from "@/reducers/VehicleSlice"; // Ensure this is the correct path
 import { FaUserEdit } from "react-icons/fa";
 import { MdDeleteOutline } from "react-icons/md";
+import { AppDispatch } from "@/store/Store";
 
 interface VehicleDataType {
   key: React.Key;
@@ -27,7 +28,7 @@ const VehiclePage = () => {
 
   const vehicle = useSelector((state: any) => state.vehicle.vehicle) || []; // Replace 'any' with your state type if available
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   // Function to open the "Add Vehicle" modal
   function openAddModal() {
@@ -45,7 +46,7 @@ const VehiclePage = () => {
   // Function to delete a vehicle by licensePlateNumber
   const deleteVehicleByLicensePlate = (licensePlateNumber: string) => {
     console.log("Deleting vehicle:", licensePlateNumber);
-    dispatch(deleteVehicle({ licensePlateNumber }));
+    dispatch(deleteVehicle(licensePlateNumber));
   };
 
   // Columns for the table
