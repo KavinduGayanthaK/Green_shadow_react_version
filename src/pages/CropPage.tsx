@@ -7,6 +7,7 @@ import GenericCard from "@/component/ImageCard";
 import { CropModel } from "@/models/CropModel";
 import { deleteCrop } from "@/reducers/CropSlice";
 import CropForm from "@/component/CropForm";
+import { AppDispatch } from "@/store/Store";
 ;
 
 
@@ -30,7 +31,7 @@ const CropPage = () => {
 
   // Get fields from Redux store
   const crop = useSelector((state:any) => state.crop.crop) || [];
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   // Open the "Add Crop" modal
   const openAddModal = () => {
@@ -48,7 +49,7 @@ const CropPage = () => {
 
   // Delete a crop by its code
   const deleteCropByCode = (cropCode: string) => {
-    dispatch(deleteCrop({ cropCode }));
+    dispatch(deleteCrop(cropCode));
   };
 
   // Filter fields based on selected size

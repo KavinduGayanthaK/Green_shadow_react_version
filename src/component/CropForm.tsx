@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { Input, Select, message } from "antd";
 import { useDispatch } from "react-redux";
 import ModalComponent from "./Modal";
+import { saveCrop, updateCrop } from "@/reducers/CropSlice";
+import { AppDispatch } from "@/store/Store";
 import { CropModel } from "@/models/CropModel";
-import { addCrop, updateCrop } from "@/reducers/CropSlice";
 
 const CropForm: React.FC<{
   isOpen: boolean;
@@ -12,7 +13,7 @@ const CropForm: React.FC<{
   buttonType: string;
   crop?: CropModel | null;
 }> = ({ isOpen, onClose, isType, buttonType, crop }) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const [cropCode, setCropCode] = useState("");
   const [commonName, setCommonName] = useState("");
@@ -81,7 +82,7 @@ const CropForm: React.FC<{
       dispatch(updateCrop(newCrop));
       message.success("Field updated successfully");
     } else {
-      dispatch(addCrop(newCrop));
+      dispatch(saveCrop(newCrop));
       message.success("Field added successfully");
     }
 
