@@ -2,14 +2,15 @@ import { SelectOutlined } from "@ant-design/icons";
 import Select from "antd/es/select";
 import { Button, Popconfirm, TableColumnsType } from "antd";
 import TableComponent from "@/component/table/TableComponent";
-import VehicleForm from "@/component/VehicleForm";
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";// Ensure this is the correct path
 import { FaUserEdit } from "react-icons/fa";
 import { MdDeleteOutline } from "react-icons/md";
 import { StaffModel } from "@/models/StaffModel";
-import { deleteStaff } from "@/reducers/StaffSlice";
+import { deleteStaff, getStaff } from "@/reducers/StaffSlice";
 import StaffForm from "@/component/StaffForm";
+import { AppDispatch } from "@/store/Store";
 
 interface StaffDataType {
   key: React.Key;
@@ -41,11 +42,15 @@ const StaffPage = () => {
 
   const staff = useSelector((state: any) => state.staff.staff) || []; // Replace 'any' with your state type if available
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
+  useEffect(() => {
+    dispatch(getStaff()); 
+  }, [dispatch]);
   // Function to open the "Add Vehicle" modal
   function openAddModal() {
     setOpen(true);
+    console.log(staff.staffId)
     setModalType("add");
   }
 
@@ -53,13 +58,14 @@ const StaffPage = () => {
   const updateModal = (staff: StaffModel) => {
     setOpen(true);
     setSelectedStaff(staff);
+    
     setModalType("update"); 
   };
 
   // Function to delete a vehicle by licensePlateNumber
   const deleteVehicleByStaffId = (staffId: string) => {
     console.log("Deleting staff:", staffId);
-    dispatch(deleteStaff({ staffId }));
+    dispatch(deleteStaff(staffId));
   };
 
   // Columns for the table
@@ -124,6 +130,7 @@ const StaffPage = () => {
 
   // Filter vehicles based on selected status
   const filteredStaff =
+   
     selectedDesignation === "ALL"
       ? staff
       : staff.filter(
@@ -176,12 +183,10 @@ const StaffPage = () => {
         </header>
 
         <TableComponent
-          dataSource={filteredStaff.map(
-            (staff: StaffDataType, index: number) => ({
-              ...staff,
-              key: staff.staffId || index, // Unique key
-            })
-          )}
+          dataSource={filteredStaff?.map((staff, index) => ({
+            key: staff.staffId || index,
+            ...staff,
+          })) || []}
           columns={columns}
         />
 

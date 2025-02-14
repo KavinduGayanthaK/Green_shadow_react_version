@@ -3,8 +3,9 @@ import { useDispatch } from "react-redux";
 import { DatePicker, Input, Select } from "antd";
 import moment from "moment";
 import { StaffModel } from "@/models/StaffModel";
-import { addStaff, updateStaff } from "@/reducers/StaffSlice";
+import { saveStaff, updateStaff} from "@/reducers/StaffSlice";
 import MainModal from "./Modal";
+import { AppDispatch } from "@/store/Store";
 
 const StaffForm: React.FC<{
   isOpen: boolean;
@@ -13,7 +14,7 @@ const StaffForm: React.FC<{
   buttonType: string;
   staff?: StaffModel | null;
 }> = ({ isOpen, onClose, isType, buttonType, staff }) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   // State variables
   const [firstName, setFirstName] = useState("");
@@ -116,7 +117,8 @@ const StaffForm: React.FC<{
     if (isType === "UPDATE STAFF") {
       dispatch(updateStaff(newStaff));
     } else {
-      dispatch(addStaff(newStaff));
+      dispatch(saveStaff(newStaff));
+    
     }
 
     resetForm();
