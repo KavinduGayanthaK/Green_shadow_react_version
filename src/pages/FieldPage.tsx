@@ -7,6 +7,7 @@ import { FieldModel } from "@/models/FieldModel";
 import { deleteField} from "@/reducers/FieldSlice";
 import FieldForm from "@/component/FieldForm";
 import GenericCard from "@/component/ImageCard";
+import { AppDispatch } from "@/store/Store";
 
 interface FieldDataType {
   key: React.Key;
@@ -27,7 +28,7 @@ const FieldPage = () => {
 
   // Get fields from Redux store
   const fields = useSelector((state: any) => state.field.field) || [];
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   // Open the "Add Field" modal
   const openAddModal = () => {
@@ -45,7 +46,7 @@ const FieldPage = () => {
 
   // Delete a field by its code
   const deleteFieldById = (fieldCode: string) => {
-    dispatch(deleteField({ fieldCode }));
+    dispatch(deleteField(fieldCode));
   };
 
   // Filter fields based on selected size

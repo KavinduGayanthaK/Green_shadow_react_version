@@ -3,8 +3,9 @@ import { Input, Button, Select, message } from "antd";
 import { useDispatch } from "react-redux";
 import { PlusOutlined } from "@ant-design/icons";
 import { FieldModel } from "@/models/FieldModel";
-import { addField, updateField } from "@/reducers/FieldSlice";
+import { saveField, updateField } from "@/reducers/FieldSlice";
 import ModalComponent from "./Modal";
+import { AppDispatch } from "@/store/Store";
 
 const FieldForm: React.FC<{
   isOpen: boolean;
@@ -13,7 +14,7 @@ const FieldForm: React.FC<{
   buttonType: string;
   field?: FieldModel | null;
 }> = ({ isOpen, onClose, isType, buttonType, field }) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const [fieldCode, setFieldCode] = useState("");
   const [fieldName, setFieldName] = useState("");
@@ -82,7 +83,7 @@ const FieldForm: React.FC<{
       dispatch(updateField(newField));
       message.success("Field updated successfully");
     } else {
-      dispatch(addField(newField));
+      dispatch(saveField(newField));
       message.success("Field added successfully");
     }
 
