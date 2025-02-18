@@ -7,6 +7,7 @@ import GenericCard from "@/component/ImageCard";
 import { deleteLog } from "@/reducers/LogSlice";
 import { LogModel } from "@/models/LogModel";
 import LogForm from "@/component/LogForm";
+import { AppDispatch } from "@/store/Store";
 
 interface LogDataType {
   key: React.Key;
@@ -30,7 +31,7 @@ const LogPage = () => {
 
   // Get fields from Redux store
   const log = useSelector((state: any) => state.log.log) || [];
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   // Open the "Add Crop" modal
   const openAddModal = () => {
@@ -48,7 +49,7 @@ const LogPage = () => {
 
   // Delete a crop by its code
   const deleteLogByCode = (logCode: string) => {
-    dispatch(deleteLog({ logCode }));
+    dispatch(deleteLog(logCode));
   };
 
   // Filter fields based on selected size

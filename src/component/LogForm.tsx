@@ -4,7 +4,8 @@ import { useDispatch } from "react-redux";
 import ModalComponent from "./Modal";
 import { LogModel } from "@/models/LogModel";
 import moment from "moment";
-import { addLog, updateLog } from "@/reducers/LogSlice";
+import {saveLog, updateLog } from "@/reducers/LogSlice";
+import { AppDispatch } from "@/store/Store";
 
 const LogForm: React.FC<{
   isOpen: boolean;
@@ -13,7 +14,7 @@ const LogForm: React.FC<{
   buttonType: string;
   log?: LogModel | null;
 }> = ({ isOpen, onClose, isType, buttonType, log }) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const [logCode, setLogCode] = useState("");
   const [logDate, setLogDate] = useState<moment.Moment | null>(null);
@@ -84,7 +85,7 @@ const LogForm: React.FC<{
       dispatch(updateLog(newLog));
       message.success("Log updated successfully");
     } else {
-      dispatch(addLog(newLog));
+      dispatch(saveLog(newLog));
       message.success("log added successfully");
     }
 
