@@ -1,32 +1,101 @@
 import { EquipmentModel } from "@/models/EquipmentModel";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import axios from "axios";
 
 const initialState : {equipment:EquipmentModel[]} = {equipment:[]}
 
-const EquipmentSlice = createSlice({
-    name:"equipment",
-    initialState,
-    reducers : {
-        // Add a equipment
-        addEquipment: (state,action:PayloadAction<EquipmentModel>)=>{
-            state.equipment.push(action.payload);
-        },
-        updateEquipment: (state, action:PayloadAction<EquipmentModel>)=>{
-            const index = state.equipment.findIndex(
-                (equipment) =>
-                    equipment.equipmentId = action.payload.equipmentId
-            );
-            if (index !== -1) {
-                state.equipment[index] = action.payload;
-            }
-        },
-        deleteEquipment:(state,action:PayloadAction<{equipmentId:string}>) =>{
-            state.equipment = state.equipment.filter(
-                (equipment) => equipment.equipmentId != action.payload.equipmentId
-            );
+const api = axios.create({
+    baseURL: "http://localhost:3000/equipment",
+  });
+  
+  export const saveEquipment = createAsyncThunk(
+    'equipment/addEquipment',
+    async (equipment:EquipmentModel) =>{
+      try {
+        const response = await api.post('/add',equipment);
+        return response.data;
+      }catch(error) {
+        return error;
+      }
+    }
+  );
+  
+  export const getEquipment= createAsyncThunk(
+    'equipment/getAllEquipment',
+    async () =>{
+      const response = await api.get('/getAllVehicle');
+      return response.data;
+    }
+  )
+  
+  export const updateEquipment = createAsyncThunk(
+    'equipment/updateCrop',
+      async (equipment:EquipmentModel)=>{
+          try{
+              const response = await api.put(`/update/${equipment.equipmentId}`,equipment);
+              return response.data;
+          }catch (error){
+              return error;
+          }
+      }
+  )
+  
+  export const deleteEquipment = createAsyncThunk(
+    'equipment/deleteEquipment',
+    async (equipmentId:string)=>{
+        try{
+            const response = await api.delete(`/delete/${equipmentId}`);
+            return response.data;
+        }catch (error){
+            return error;
         }
     }
-});
-
-export const { addEquipment,updateEquipment,deleteEquipment} = EquipmentSlice.actions;
+  );
+  
+  
+  const EquipmentSlice = createSlice({
+    name: "equipment",
+    initialState,
+    reducers:{},
+    extraReducers: builder=> {
+      builder
+        .addCase(saveEquipment.fulfilled, (state, action) =>{
+          state.equipment.push(action.payload)
+        })
+        .addCase(saveEquipment.pending, (state, action) =>{
+          console.log(action.payload);
+        })
+        .addCase(saveEquipment.rejected, (state, action) =>{
+          console.log("Failed to save equipment:",action.payload);
+        })
+        .addCase(getEquipment.fulfilled, (state, action) => {
+          state.equipment = action.payload; // Ensure the fetched array replaces the state
+        })
+        .addCase(getEquipment.pending, (state, action) =>{
+          console.log(action.payload);
+        })
+        .addCase(getEquipment.rejected, (state, action) =>{
+          console.log("Failed to get equipment:",action.payload);
+        })
+        .addCase(updateEquipment.fulfilled, (state, action) =>{
+          state.equipment.push(action.payload)
+        })
+        .addCase(updateEquipment.pending, (state, action) =>{
+          console.log(action.payload);
+        })
+        .addCase(updateEquipment.rejected, (state, action) =>{
+          console.log("Failed to update equipment:",action.payload);
+        })
+        .addCase(deleteEquipment.fulfilled, (state, action) =>{
+          state.equipment.push(action.payload)
+        })
+        .addCase(deleteEquipment.pending, (state, action) =>{
+          console.log(action.payload);
+        })
+        .addCase(deleteEquipment.rejected, (state, action) =>{
+          console.log("Failed to delete equipment:",action.payload);
+        })
+        
+    }
+  });
 export default EquipmentSlice.reducer;
