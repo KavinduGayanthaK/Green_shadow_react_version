@@ -3,8 +3,9 @@ import Input from "antd/es/input";
 import Select from "antd/es/select";
 import { useDispatch } from "react-redux";
 import ModalComponent from "./Modal";
-import { addEquipment, updateEquipment } from "@/reducers/EquipmentSlice";
+import {saveEquipment, updateEquipment } from "@/reducers/EquipmentSlice";
 import { EquipmentModel } from "@/models/EquipmentModel";
+import { AppDispatch } from "@/store/Store";
 
 const EquipmentForm: React.FC<{
   isOpen: boolean;
@@ -13,7 +14,7 @@ const EquipmentForm: React.FC<{
   buttonType: string;
   equipment?: EquipmentModel | null; 
 }> = ({ isOpen, onClose, isType, buttonType,equipment }) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const [equipmentId, setEquipmentId] = useState("");
   const [equipmentName, setEquipmentName] = useState("");
@@ -58,7 +59,7 @@ const EquipmentForm: React.FC<{
     if (isType === "UPDATE EQUIPMENT") {
         dispatch(updateEquipment(newEquipment));
       } else {
-        dispatch(addEquipment(newEquipment));
+        dispatch(saveEquipment(newEquipment));
       }
 
       resetForm();

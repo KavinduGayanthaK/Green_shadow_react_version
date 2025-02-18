@@ -9,6 +9,7 @@ import { MdDeleteOutline } from "react-icons/md";
 import { EquipmentModel } from "@/models/EquipmentModel";
 import { deleteEquipment } from "@/reducers/EquipmentSlice";
 import EquipmentForm from "@/component/EquipmentForm";
+import { AppDispatch } from "@/store/Store";
 
 interface EquipmentDataType {
   key:React.Key;
@@ -29,7 +30,7 @@ const EquipmentPage = () => {
 
   const equipment = useSelector((state: any) => state.equipment.equipment) || []; // Replace 'any' with your state type if available
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   // Function to open the "Add Vehicle" modal
   function openAddModal() {
@@ -47,7 +48,7 @@ const EquipmentPage = () => {
   // Function to delete a vehicle by licensePlateNumber
   const deleteEquipmentById = (equipmentId: string) => {
     console.log("Deleting equipment:", equipmentId);
-    dispatch(deleteEquipment({ equipmentId }));
+    dispatch(deleteEquipment(equipmentId));
   };
 
   // Columns for the table
